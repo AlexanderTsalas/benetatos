@@ -1,5 +1,4 @@
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import React, { useEffect } from 'react';
 import { useLanguage } from '../LanguageContext';
 
 interface SEOProps {
@@ -23,50 +22,79 @@ export const SEO: React.FC<SEOProps> = ({
   const siteUrl = 'https://kbenetatos.gr';
   const fullTitle = `${title} | Dr. Konstantinos Benetatos`;
 
-  // Default Schema for Physician
-  const defaultSchema = {
-    "@context": "https://schema.org",
-    "@type": "Physician",
-    "name": "Dr. Konstantinos Benetatos",
-    "url": siteUrl,
-    "logo": "https://kbenetatos.gr/wp-content/uploads/cropped-logo-white-e1541003043733.png",
-    "image": "https://kbenetatos.gr/wp-content/uploads/CV-s1-p1-768x555.jpg",
-    "description": "Board certified Plastic Surgeon in Athens specializing in Rhinoplasty, Breast Augmentation, and Microsurgery.",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Leoforos Kifisias 123",
-      "addressLocality": "Athens",
-      "addressCountry": "GR"
-    },
-    "telephone": "+30 210 123 4567",
-    "priceRange": "$$$"
-  };
+  useEffect(() => {
+    // Update Title
+    document.title = fullTitle;
 
-  return (
-    <Helmet>
-      <html lang={language} />
-      <title>{fullTitle}</title>
-      <meta name="description" content={description} />
-      {keywords && <meta name="keywords" content={keywords.join(', ')} />}
-      
-      {/* Open Graph */}
-      <meta property="og:type" content={type} />
-      <meta property="og:title" content={fullTitle} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={image} />
-      <meta property="og:url" content={siteUrl} />
-      <meta property="og:locale" content={language === 'el' ? 'el_GR' : 'en_US'} />
+    // Helper to update meta tags
+    const updateMeta = (name: string, content: string) => {
+      let element = document.querySelector(`meta[name="${name}"]`);
+      if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute('name', name);
+        document.head.appendChild(element);
+      }
+      element.setAttribute('content', content);
+    };
 
-      {/* Twitter */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={fullTitle} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={image} />
+    const updateProperty = (property: string, content: string) => {
+      let element = document.querySelector(`meta[property="${property}"]`);
+      if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute('property', property);
+        document.head.appendChild(element);
+      }
+      element.setAttribute('content', content);
+    };
 
-      {/* JSON-LD Schema */}
-      <script type="application/ld+json">
-        {JSON.stringify(schema || defaultSchema)}
-      </script>
-    </Helmet>
-  );
+    updateMeta('description', description);
+    if (keywords) updateMeta('keywords', keywords.join(', '));
+    
+    // Open Graph
+    updateProperty('og:type', type);
+    updateProperty('og:title', fullTitle);
+    updateProperty('og:description', description);
+    updateProperty('og:image', image);
+    updateProperty('og:url', siteUrl);
+    updateProperty('og:locale', language === 'el' ? 'el_GR' : 'en_US');
+
+    // Twitter
+    updateMeta('twitter:card', 'summary_large_image');
+    updateMeta('twitter:title', fullTitle);
+    updateMeta('twitter:description', description);
+    updateMeta('twitter:image', image);
+
+    // Schema.org JSON-LD
+    const defaultSchema = {
+      "@context": "https://schema.org",
+      "@type": "Physician",
+      "name": "Dr. Konstantinos Benetatos",
+      "url": siteUrl,
+      "logo": "https://kbenetatos.gr/wp-content/uploads/cropped-logo-white-e1541003043733.png",
+      "image": "https://kbenetatos.gr/wp-content/uploads/CV-s1-p1-768x555.jpg",
+      "description": "Board certified Plastic Surgeon in Athens specializing in Rhinoplasty, Breast Augmentation, and Microsurgery.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Leoforos Kifisias 123",
+        "addressLocality": "Athens",
+        "addressCountry": "GR"
+      },
+      "telephone": "+30 210 123 4567",
+      "priceRange": "$$$"
+    };
+
+    const schemaToUse = schema || defaultSchema;
+    
+    let script = document.querySelector('#schema-json-ld');
+    if (!script) {
+      script = document.createElement('script');
+      script.id = 'schema-json-ld';
+      script.setAttribute('type', 'application/ld+json');
+      document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify(schemaToUse);
+
+  }, [fullTitle, description, type, image, schema, keywords, language]);
+
+  return null;
 };
