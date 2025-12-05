@@ -19,7 +19,7 @@ const languages: { code: Language; label: string; flag: string }[] = [
   { code: 'ru', label: 'RU', flag: '🇷🇺' },
 ];
 
-export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, toggleTheme, isDark }) => {
+export const Header: React.FC<HeaderProps> = ({ onNavigate, toggleTheme, isDark }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);

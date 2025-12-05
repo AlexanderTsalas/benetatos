@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SectionTitle } from './SectionTitle';
 import { Button } from './Button';
-import { Search, Calendar, User, Clock, Tag, X, ChevronRight, ArrowRight } from 'lucide-react';
+import { Search, Calendar, User, Clock, X, ChevronRight, ArrowRight } from 'lucide-react';
 import { BlogPost } from '../types';
 import { useLanguage } from '../LanguageContext';
 import { SEO } from './SEO';

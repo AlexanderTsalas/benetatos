@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from './Button';
 import { Star, Award, Shield } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 
